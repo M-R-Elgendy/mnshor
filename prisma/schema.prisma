@@ -22,6 +22,7 @@ model User {
   updatedAt          DateTime             @updatedAt
   posts              Post[]
   CategoryPrefrances CategoryPrefrances[]
+  File               File[]
 
   @@index([id, email])
 }
@@ -60,4 +61,22 @@ model CategoryPrefrances {
   user       User     @relation(fields: [userId], references: [id])
 
   @@index([id, userId, categoryId])
+}
+
+model File {
+  id       Int    @id @default(autoincrement())
+  type     String
+  ETag     String
+  Location String
+  url      String
+  key      String
+  bucket   String
+
+  User   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, url])
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, HttpStatus, Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
+import { HttpStatus, Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
 import { S3 } from 'aws-sdk';
 import { ConfigService } from '@nestjs/config';
 import { AuthContext } from 'src/auth/auth.context';
@@ -16,9 +16,10 @@ export class FileUploadService {
     private prisma: PrismaClient
   ) {
     this.s3 = new S3({
-      accessKeyId: this.configService.getOrThrow<string>('AWS_ACCESS_KEY_ID'),
-      secretAccessKey: this.configService.getOrThrow<string>('AWS_SECRET_ACCESS_KEY'),
-      region: this.configService.getOrThrow<string>('AWS_REGION'),
+      endpoint: this.configService.getOrThrow<string>('DO_SPACES_ENDPOINT'),
+      accessKeyId: this.configService.getOrThrow<string>('DO_SPACES_KEY'),
+      secretAccessKey: this.configService.getOrThrow<string>('DO_SPACES_SECRET'),
+      region: this.configService.getOrThrow<string>('DO_SPACES_REGION'),
     });
   }
 
@@ -26,14 +27,17 @@ export class FileUploadService {
   async uploadFile(file: Express.Multer.File) {
 
     this.validateFile(file);
+    console.log("===============================");
 
     const params = {
-      Bucket: this.configService.getOrThrow<string>('AWS_BUCKET_NAME'),
+      Bucket: this.configService.getOrThrow<string>('DO_SPACES_BUCKET'),
       Key: this.generateFileName(file),
       Body: file.buffer,
+      ACL: 'public-read',
       ContentType: file.mimetype,
     };
     const uplodedFile = await this.s3.upload(params).promise();
+    console.log("===============================");
 
     const fileDoc = await this.prisma.file.create({
       data: {
@@ -43,9 +47,12 @@ export class FileUploadService {
         key: uplodedFile.Key,
         url: uplodedFile.Location,
         bucket: uplodedFile.Bucket,
-        userId: this.authContext.getUser().id
+        userId: this.authContext.getUser().id || 1
       }
-    })
+    });
+
+    console.log("===============================");
+    console.log(fileDoc);
 
     return {
       message: "File uploaded successfully",

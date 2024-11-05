@@ -5,7 +5,7 @@ import { Role, SessionToken } from '../global/types';
     scope: Scope.REQUEST,
 })
 export class AuthContext {
-    private id: string;
+    private id: number;
     private role: Role;
 
     constructor() { }

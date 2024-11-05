@@ -37,10 +37,11 @@ export class AuthGuard implements CanActivate {
         try {
             const payload = await this.jwtService.verifyAsync<SessionToken>(token, { secret: this.configService.getOrThrow('JWT_SECRET') });
 
-            const user = await this.prisma.user.findUnique({ where: { id: payload.id, isDeleted: false } });
+            // const user = await this.prisma.user.findUnique({ where: { id: payload.id, isDeleted: false } });
+            const user = await this.prisma.user.findUnique({ where: { id: payload.id } });
 
             if (!user) throw new ForbiddenException('User not found');
-            if (user.isBlocked || user.isDeleted) throw new ForbiddenException('User may be blocked. Please contact the support team');
+            // if (user.isBlocked || user.isDeleted) throw new ForbiddenException('User may be blocked. Please contact the support team');
 
             (request as any).session = payload;
             this.authContext.setUser(payload);
