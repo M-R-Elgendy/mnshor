@@ -27,7 +27,6 @@ export class FileUploadService {
   async uploadFile(file: Express.Multer.File) {
 
     this.validateFile(file);
-    console.log("===============================");
 
     const params = {
       Bucket: this.configService.getOrThrow<string>('DO_SPACES_BUCKET'),
@@ -37,7 +36,6 @@ export class FileUploadService {
       ContentType: file.mimetype,
     };
     const uplodedFile = await this.s3.upload(params).promise();
-    console.log("===============================");
 
     const fileDoc = await this.prisma.file.create({
       data: {
@@ -50,9 +48,6 @@ export class FileUploadService {
         userId: this.authContext.getUser().id || 1
       }
     });
-
-    console.log("===============================");
-    console.log(fileDoc);
 
     return {
       message: "File uploaded successfully",

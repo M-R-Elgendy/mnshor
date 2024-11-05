@@ -5,6 +5,8 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
+import { AuthContextModule } from './auth/auth.context';
+import { AuthContext } from './auth/auth.context';
 
 @Module({
   imports: [
@@ -14,9 +16,10 @@ import { FileUploadModule } from './file-upload/file-upload.module';
     }),
     UserModule,
     AuthModule,
-    FileUploadModule
+    FileUploadModule,
+    AuthContextModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthContext],
 })
 export class AppModule { }
