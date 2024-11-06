@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsPositive, IsInt, ValidateIf } from "class-validator";
+import { IsPositive, IsInt, ValidateIf, Min, IsOptional } from "class-validator";
 
 export class IdDot {
     @Transform(({ value }) => parseInt(value, 10))
@@ -10,13 +10,17 @@ export class IdDot {
 }
 
 export class PaginationDto {
+    @IsOptional()
     @Transform(({ value }) => parseInt(value, 10))
     @IsInt()
     @IsPositive()
+    @Min(1)
     page: number;
 
+    @IsOptional()
     @Transform(({ value }) => parseInt(value, 10))
     @IsInt()
     @IsPositive()
+    @Min(10)
     limit: number;
 }

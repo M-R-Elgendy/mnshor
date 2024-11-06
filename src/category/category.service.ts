@@ -1,6 +1,7 @@
 import { Injectable, HttpStatus, ConflictException, BadRequestException } from '@nestjs/common';
 import { CategoryDto } from './dto/category.dto';
 import { PrismaClient } from '@prisma/client';
+import { PaginationDto } from 'src/global/DTOs/general-dtos.dto';
 
 @Injectable()
 export class CategoryService {
@@ -33,8 +34,24 @@ export class CategoryService {
 
   }
 
-  async findAll() {
-    return `This action returns all category`;
+  async findAll(paginationData: PaginationDto) {
+
+    let { page = 1, limit = 10 } = paginationData;
+    page = page - 1;
+    const skip = page * limit;
+
+    console.log({ skip, limit })
+    const categories = await this.prisma.category.findMany({
+      where: { isDeleted: false },
+      skip: skip,
+      take: limit
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Categories fetched successfully',
+      data: categories
+    }
   }
 
   async findOne(id: number) {
@@ -95,4 +112,5 @@ export class CategoryService {
       message: 'Category deleted successfully',
     }
   }
+
 }

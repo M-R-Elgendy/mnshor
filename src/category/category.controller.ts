@@ -1,7 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, Delete, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CategoryDto } from './dto/category.dto';
-import { IdDot } from 'src/global/DTOs/general-dtos.dto';
+import { IdDot, PaginationDto } from 'src/global/DTOs/general-dtos.dto';
 
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
@@ -14,15 +14,15 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
   @Post()
-  // @Roles([Role.ADMIN])
+  @Roles([Role.ADMIN])
   create(@Body() CategoryDto: CategoryDto) {
     return this.categoryService.create(CategoryDto);
   }
 
   @Get()
   @Roles(['*'])
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(@Query() paginationData: PaginationDto) {
+    return this.categoryService.findAll(paginationData);
   }
 
   @Get(':id')
@@ -31,13 +31,13 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  // @Roles([Role.ADMIN])
+  @Roles([Role.ADMIN])
   update(@Param() params: IdDot, @Body() updateCategoryDto: CategoryDto) {
     return this.categoryService.update(params.id, updateCategoryDto);
   }
 
   @Delete(':id')
-  // @Roles([Role.ADMIN])
+  @Roles([Role.ADMIN])
   remove(@Param() params: IdDot) {
     return this.categoryService.remove(params.id);
   }
