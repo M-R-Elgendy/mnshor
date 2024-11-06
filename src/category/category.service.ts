@@ -40,7 +40,6 @@ export class CategoryService {
     page = page - 1;
     const skip = page * limit;
 
-    console.log({ skip, limit })
     const categories = await this.prisma.category.findMany({
       where: { isDeleted: false },
       skip: skip,
@@ -57,8 +56,25 @@ export class CategoryService {
   async findOne(id: number) {
     const category = await this.prisma.category.findFirst({
       where: { id: id, isDeleted: false },
-      include: {
-        Post: true
+      select: {
+        id: true,
+        name: true,
+        Post: {
+          select: {
+            id: true,
+            title: true,
+            content: true,
+            image: true,
+            createdAt: true,
+            User: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+
+        },
       }
     });
 

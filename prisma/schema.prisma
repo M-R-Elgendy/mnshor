@@ -24,28 +24,32 @@ model User {
   email              String               @unique
   password           String
   role               USER_TYPES           @default(user)
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
   posts              Post[]
   CategoryPrefrances CategoryPrefrances[]
   File               File[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([id, email])
 }
 
 model Post {
-  id         Int      @id @default(autoincrement())
-  title      String
-  content    String?
-  published  Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  authorId   Int
-  categoryId Int
-  author     User     @relation(fields: [authorId], references: [id])
-  Category   Category @relation(fields: [categoryId], references: [id])
+  id          Int      @id @default(autoincrement())
+  title       String
+  content     String?
+  image       String?
+  isPublished Boolean  @default(true)
+  isDeleted   Boolean  @default(false)
+  userId      Int
+  categoryId  Int
+  User        User     @relation(fields: [userId], references: [id])
+  Category    Category @relation(fields: [categoryId], references: [id])
 
-  @@index([id, authorId, categoryId])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id, userId, categoryId])
 }
 
 model Category {
@@ -54,6 +58,9 @@ model Category {
   isDeleted          Boolean              @default(false)
   Post               Post[]
   CategoryPrefrances CategoryPrefrances[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([id])
 }
@@ -66,6 +73,9 @@ model CategoryPrefrances {
   rank       Int
   Category   Category @relation(fields: [categoryId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([id, userId, categoryId])
 }
