@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { FileUploadModule } from './file-upload/file-upload.module';
 import { AuthContextModule } from './auth/auth.context';
 import { AuthContext } from './auth/auth.context';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { AuthContext } from './auth/auth.context';
     UserModule,
     AuthModule,
     FileUploadModule,
-    AuthContextModule
+    AuthContextModule,
+    CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService, AuthContext],

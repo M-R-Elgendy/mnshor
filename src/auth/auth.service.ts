@@ -77,8 +77,10 @@ export class AuthService {
         }
       });
 
+      if (!user) throw new UnauthorizedException('Invalid credentials');
+
       const isPasswordMatch = await this.verifyPassword(emailLoginDto.password, user.password);
-      if (!isPasswordMatch) throw new UnauthorizedException('Invalid credentials')
+      if (!isPasswordMatch) throw new UnauthorizedException('Invalid credentials');
 
       const token = await this.jwtService.signAsync({ id: user.id, role: user.role }, { expiresIn: '30d', secret: this.configService.getOrThrow('JWT_SECRET') });
       return { message: 'User logged in successfully', statusCode: HttpStatus.OK, token };
@@ -106,7 +108,5 @@ export class AuthService {
       throw new Error('Error verifying password');
     }
   }
-
-
 
 }
