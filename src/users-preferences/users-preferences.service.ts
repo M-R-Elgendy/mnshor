@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common';
 import { CreateUsersPreferenceDto } from './dto/create-users-preference.dto';
 
 import { PrismaClient } from '@prisma/client';
@@ -15,46 +15,29 @@ export class UsersPreferencesService {
   async create(createUsersPreferenceDto: CreateUsersPreferenceDto) {
 
     const userId = this.authContext.getUser().id;
-    // const preferences = createUsersPreferenceDto.preferences;
-    // const uniquePreferences = preferences.filter((item, index) => preferences.indexOf(item) === index);
+    const categoryId = createUsersPreferenceDto.categoryId;
 
-    // const categoriesCount = await this.prisma.category.count({
-    //   where: { id: { in: uniquePreferences } }
-    // });
+    const isCategoryExsists = await this.prisma.category.count({
+      where: { id: categoryId }
+    });
 
-    // if (categoriesCount !== uniquePreferences.length) {
-    //   return {
-    //     statusCode: 400,
-    //     message: 'One or more categories not found',
-    //     data: null
-    //   }
-    // }
+    if (!isCategoryExsists) throw new BadRequestException('Invalid category Id');
 
-    // const preferenceRecords = uniquePreferences.map((preference) => {
-    //   return {
-    //     categoryId: preference,
-    //     userId: userId
-    //   }
-    // });
+    const isAlreadyExsits = await this.prisma.categoryPrefrances.findFirst({
+      where: {
+        userId: userId,
+        categoryId: categoryId
+      }
+    });
 
-    // const isAlreadyExsits = await this.prisma.categoryPrefrances.findMany({
-    //   where: {
-    //     userId: userId,
-    //     categoryId: { in: uniquePreferences }
-    //   }
-    // });
+    if (isAlreadyExsits) throw new ConflictException('This category is already exists in your preference');
 
-    // if (isAlreadyExsits.length > 0) {
-    //   return {
-    //     statusCode: 400,
-    //     message: 'User preferences already exists',
-    //     data: null
-    //   }
-    // }
-
-    // return await this.prisma.categoryPrefrances.createMany({
-    //   data: preferenceRecords
-    // });
+    return await this.prisma.categoryPrefrances.create({
+      data: {
+        userId: userId,
+        categoryId: categoryId
+      }
+    });
 
   }
 
