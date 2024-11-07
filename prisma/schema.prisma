@@ -70,7 +70,7 @@ model CategoryPrefrances {
 
   userId     Int
   categoryId Int
-  rank       Int
+  rank       Int?
   Category   Category @relation(fields: [categoryId], references: [id])
   user       User     @relation(fields: [userId], references: [id])
 

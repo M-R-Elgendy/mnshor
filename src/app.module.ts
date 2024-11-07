@@ -9,6 +9,7 @@ import { AuthContextModule } from './auth/auth.context';
 import { AuthContext } from './auth/auth.context';
 import { CategoryModule } from './category/category.module';
 import { PostModule } from './post/post.module';
+import { UsersPreferencesModule } from './users-preferences/users-preferences.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { PostModule } from './post/post.module';
     FileUploadModule,
     AuthContextModule,
     CategoryModule,
-    PostModule
+    PostModule,
+    UsersPreferencesModule
   ],
   controllers: [AppController],
   providers: [AppService, AuthContext],
