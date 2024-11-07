@@ -6,6 +6,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RoleGuard } from 'src/auth/guards/role.guard';
 import { Roles } from '../global/decorators/role.decorator';
 import { Role } from 'src/global/types';
+import { IdDot } from 'src/global/DTOs/general-dtos.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('preferences')
@@ -23,14 +24,9 @@ export class UsersPreferencesController {
     return this.usersPreferencesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersPreferencesService.findOne(+id);
-  }
-
-  @Delete('/reset')
-  remove() {
-    return this.usersPreferencesService.remove();
+  @Delete('/:id')
+  remove(@Param() params: IdDot) {
+    return this.usersPreferencesService.remove(params.id);
   }
 
 }
