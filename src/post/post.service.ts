@@ -3,7 +3,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PrismaClient } from '@prisma/client';
 import { AuthContext } from 'src/auth/auth.context';
-import { PaginationDto } from 'src/global/DTOs/general-dtos.dto';
+import { PaginationDto, PostFilterDto } from 'src/global/DTOs/general-dtos.dto';
 import { Role } from 'src/global/types';
 
 @Injectable()
@@ -41,13 +41,56 @@ export class PostService {
 
   }
 
-  async findAll(paginationData: PaginationDto) {
-    let { page = 1, limit = 10 } = paginationData;
+  async findAll(postFilterDto: PostFilterDto) {
+    let { page = 1, limit = 10 } = postFilterDto;
     page = page - 1;
     const skip = page * limit;
 
+    const where = { isDeleted: false };
+    if (postFilterDto.categoryId) where['categoryId'] = postFilterDto.categoryId;
+
     const posts = await this.prisma.post.findMany({
-      where: { isDeleted: false },
+      where: where,
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        image: true,
+        createdAt: true,
+        User: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        Category: {
+          select: {
+            id: true,
+            name: true
+          }
+        }
+      },
+      skip: skip,
+      take: limit
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Categories fetched successfully',
+      data: posts
+    }
+
+  }
+
+  async findMyPosts(paginationDto: PaginationDto) {
+    let { page = 1, limit = 10 } = paginationDto;
+    page = page - 1;
+    const skip = page * limit;
+
+    const userId = this.authContext.getUser().id;
+
+    const posts = await this.prisma.post.findMany({
+      where: { userId: userId, isDeleted: false },
       select: {
         id: true,
         title: true,

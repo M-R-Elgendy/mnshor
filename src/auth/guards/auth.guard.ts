@@ -11,6 +11,7 @@ import { FastifyRequest } from 'fastify';
 import { AuthContext } from '../auth.context';
 import { SessionToken } from '../../global/types';
 import { PrismaClient } from '@prisma/client';
+import { Role } from '../../global/types';
 @Injectable()
 export class AuthGuard implements CanActivate {
 
@@ -22,6 +23,20 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService = new JwtService();
 
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
+
+        // const req = ctx.switchToHttp().getRequest<FastifyRequest>();
+        // this.authContext.setUser({
+        //     id: 1,
+        //     role: Role.USER
+        // });
+
+        // (req as any).session = ({
+        //     id: 1,
+        //     role: Role.USER
+        // });
+
+        // return true;
+
         const request = ctx.switchToHttp().getRequest<FastifyRequest>();
         const authHeader = request.headers?.authorization;
 

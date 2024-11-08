@@ -1,5 +1,6 @@
 import { Transform } from "class-transformer";
-import { IsPositive, IsInt, ValidateIf, Min, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
+import { IsPositive, IsInt, ValidateNested, Min, IsOptional } from "class-validator";
 
 export class IdDot {
     @Transform(({ value }) => parseInt(value, 10))
@@ -21,6 +22,13 @@ export class PaginationDto {
     @Transform(({ value }) => parseInt(value, 10))
     @IsInt()
     @IsPositive()
-    @Min(10)
+    @Min(5)
     limit: number;
+}
+
+export class PostFilterDto extends PaginationDto {
+    @IsOptional()
+    @Transform(({ value }) => parseInt(value, 10))
+    @Type(() => IdDot)
+    categoryId?: IdDot;
 }

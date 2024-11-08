@@ -17,8 +17,4 @@ export class CreatePostDto {
     @IsInt()
     @IsPositive()
     categoryId: number;
-
-    @ValidateIf((o) => !o.content || !o.image)
-    @IsNotEmpty()
-    contentOrImage: string;
 }

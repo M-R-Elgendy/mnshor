@@ -58,9 +58,13 @@ export class AuthService {
 
       return {
         message: 'User created successfully',
-        user: user,
-        token,
-        statusCode: HttpStatus.CREATED
+        statusCode: HttpStatus.CREATED,
+        data: {
+          token,
+          userId: user.id,
+          userName: user.name,
+          role: user.role
+        }
       };
 
     } catch (error) {
@@ -83,7 +87,16 @@ export class AuthService {
       if (!isPasswordMatch) throw new UnauthorizedException('Invalid credentials');
 
       const token = await this.jwtService.signAsync({ id: user.id, role: user.role }, { expiresIn: '30d', secret: this.configService.getOrThrow('JWT_SECRET') });
-      return { message: 'User logged in successfully', statusCode: HttpStatus.OK, token };
+      return {
+        message: 'User logged in successfully',
+        statusCode: HttpStatus.OK,
+        data: {
+          token,
+          userId: user.id,
+          userName: user.name,
+          role: user.role
+        }
+      };
 
     } catch (error) {
       throw error;
