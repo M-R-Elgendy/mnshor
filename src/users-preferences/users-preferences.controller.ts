@@ -8,13 +8,12 @@ import { Roles } from '../global/decorators/role.decorator';
 import { Role } from 'src/global/types';
 import { IdDot } from 'src/global/DTOs/general-dtos.dto';
 
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard)
 @Controller('preferences')
 export class UsersPreferencesController {
   constructor(private readonly usersPreferencesService: UsersPreferencesService) { }
 
   @Post()
-  @Roles([Role.USER])
   create(@Body() createUsersPreferenceDto: CreateUsersPreferenceDto) {
     return this.usersPreferencesService.create(createUsersPreferenceDto);
   }

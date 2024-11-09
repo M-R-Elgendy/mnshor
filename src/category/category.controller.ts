@@ -26,6 +26,7 @@ export class CategoryController {
   }
 
   @Get(':id')
+  @Roles([Role.ADMIN])
   findOne(@Param() params: IdDot) {
     return this.categoryService.findOne(params.id);
   }

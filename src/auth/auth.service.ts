@@ -34,7 +34,8 @@ export class AuthService {
 
       const foundedUser = await this.prisma.user.findFirst({
         where: {
-          email: emailSignUpDto.email
+          email: emailSignUpDto.email,
+          // isDeleted: false
         },
         select: {
           name: true,
@@ -77,7 +78,8 @@ export class AuthService {
     try {
       const user = await this.prisma.user.findFirst({
         where: {
-          email: emailLoginDto.email
+          email: emailLoginDto.email,
+          isDeleted: false
         }
       });
 
