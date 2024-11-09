@@ -24,6 +24,7 @@ model User {
   email              String               @unique
   password           String
   role               USER_TYPES           @default(user)
+  isDeleted          Boolean              @default(false)
   posts              Post[]
   CategoryPrefrances CategoryPrefrances[]
   File               File[]

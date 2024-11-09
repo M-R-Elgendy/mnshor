@@ -1,26 +1,63 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
+import { IdDot, PaginationDto } from 'src/global/DTOs/general-dtos.dto';
+import { PrismaClient } from '@prisma/client';
+import { AuthContext } from 'src/auth/auth.context';
 @Injectable()
 export class UserService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+
+  constructor(
+    private readonly prisma: PrismaClient,
+  ) { }
+
+  async findAll(paginationDto: PaginationDto) {
+
+    let { page = 1, limit = 10 } = paginationDto;
+    page = page - 1;
+    const skip = page * limit;
+
+    const users = await this.prisma.user.findMany({
+      where: { isDeleted: false },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true
+      }
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      data: users
+    }
+
+
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} user`;
+  // }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
+  // update(id: number, updateUserDto: UpdateUserDto) {
+  //   return `This action updates a #${id} user`;
+  // }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  async remove(id: number) {
+    const query: any = { id: id, isDeleted: false }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+    const user = await this.prisma.user.findUnique({ where: query });
+    if (!user) throw new BadRequestException('User not found');
+
+    await this.prisma.user.update({
+      where: query,
+      data: { isDeleted: true }
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User deleted successfully',
+    }
   }
 }

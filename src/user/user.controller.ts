@@ -9,19 +9,19 @@ import { Role } from 'src/global/types';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Roles([Role.ADMIN])
-@Controller('user')
+@Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Get()
   findAll(@Query() paginationData: PaginationDto) {
-    return this.userService.findAll();
+    return this.userService.findAll(paginationData);
   }
 
-  @Get(':id')
-  findOne(@Param() params: IdDot) {
-    return this.userService.findOne(params.id);
-  }
+  // @Get(':id')
+  // findOne(@Param() params: IdDot) {
+  //   return this.userService.findOne(params.id);
+  // }
 
   @Delete(':id')
   remove(@Param() params: IdDot) {

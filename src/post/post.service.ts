@@ -69,9 +69,7 @@ export class PostService {
             name: true
           }
         }
-      },
-      skip: skip,
-      take: limit
+      }
     });
 
     return {
