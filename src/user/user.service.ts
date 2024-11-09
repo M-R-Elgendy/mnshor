@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { IdDot, PaginationDto } from 'src/global/DTOs/general-dtos.dto';
 import { PrismaClient } from '@prisma/client';
 import { AuthContext } from 'src/auth/auth.context';
+import { Role } from 'src/global/types';
 @Injectable()
 export class UserService {
 
@@ -18,7 +19,7 @@ export class UserService {
     const skip = page * limit;
 
     const users = await this.prisma.user.findMany({
-      where: { isDeleted: false },
+      where: { isDeleted: false, role: Role.USER },
       select: {
         id: true,
         name: true,
@@ -36,13 +37,30 @@ export class UserService {
 
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
+  async getAdmins(paginationDto: PaginationDto) {
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+    let { page = 1, limit = 10 } = paginationDto;
+    page = page - 1;
+    const skip = page * limit;
+
+    const users = await this.prisma.user.findMany({
+      where: { isDeleted: false, role: Role.ADMIN },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true
+      }
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Users fetched successfully',
+      data: users
+    }
+
+
+  }
 
   async remove(id: number) {
     const query: any = { id: id, isDeleted: false }

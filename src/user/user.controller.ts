@@ -18,6 +18,12 @@ export class UserController {
     return this.userService.findAll(paginationData);
   }
 
+  @Get('admins')
+  getAdmins(@Query() paginationData: PaginationDto) {
+    return this.userService.getAdmins(paginationData);
+  }
+
+
   // @Get(':id')
   // findOne(@Param() params: IdDot) {
   //   return this.userService.findOne(params.id);
