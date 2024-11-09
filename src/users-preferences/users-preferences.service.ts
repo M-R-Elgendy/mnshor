@@ -32,12 +32,21 @@ export class UsersPreferencesService {
 
     if (isAlreadyExsits) throw new ConflictException('This category is already exists in your preference');
 
-    return await this.prisma.categoryPrefrances.create({
+    const createdPref = await this.prisma.categoryPrefrances.create({
       data: {
         userId: userId,
         categoryId: categoryId
       }
     });
+
+    return {
+      statusCode: 201,
+      message: 'Preference created successfully',
+      data: {
+        id: createdPref.id,
+        categoryId: createdPref.categoryId
+      }
+    }
 
   }
 
@@ -46,6 +55,7 @@ export class UsersPreferencesService {
     const preferences = await this.prisma.categoryPrefrances.findMany({
       where: { userId: userId },
       select: {
+        id: true,
         Category: {
           select: {
             id: true,
@@ -58,7 +68,7 @@ export class UsersPreferencesService {
     return {
       statusCode: 200,
       message: 'Categories fetched successfully',
-      data: preferences.map((preference) => preference.Category)
+      data: preferences
     }
   }
 
