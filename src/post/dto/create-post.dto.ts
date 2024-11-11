@@ -2,11 +2,11 @@ import { Allow, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUrl, MaxL
 
 export class CreatePostDto {
     @IsString()
-    @MaxLength(50)
+    @MaxLength(255)
     title: string;
 
     @IsString()
-    @MaxLength(255)
+    @MaxLength(1000)
     content: string;
 
     @IsOptional()
