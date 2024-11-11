@@ -69,6 +69,9 @@ export class PostService {
             name: true
           }
         }
+      },
+      orderBy: {
+        id: 'desc'
       }
     });
 
@@ -109,7 +112,10 @@ export class PostService {
         }
       },
       skip: skip,
-      take: limit
+      take: limit,
+      orderBy: {
+        id: 'desc'
+      }
     });
 
     return {
