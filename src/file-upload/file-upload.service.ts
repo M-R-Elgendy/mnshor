@@ -62,7 +62,16 @@ export class FileUploadService {
   private validateFile(file: Express.Multer.File) {
     const maxFileSize = this.configService.get<number>('MAX_FILE_SIZE') || 5
     const maxSize = maxFileSize * 1024 * 1024;
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf'];
+    const allowedMimeTypes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'image/svg+xml',
+      'image/bmp',
+      'image/tiff',
+      'image/vnd.microsoft.icon',
+    ];
 
     if (file.size > maxSize) {
       throw new UnsupportedMediaTypeException('File size exceeds the maximum limit of 5MB');
